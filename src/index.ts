@@ -6,7 +6,6 @@ admin.initializeApp(functions.config().firebase);
 
 const accountSid = functions.config().twilio.sid;
 const dfdapprovednumber = functions.config().twilio.dfdapprovednumber;
-// const dfdapprovednumber = '+18776591383';
 const token = functions.config().twilio.token;
 // const sendGridApiKey = functions.config().twilio.sendgridapikey;
 const client = require('twilio')(accountSid, token);
@@ -357,7 +356,7 @@ exports.incomingMessageFromTwilio = functions.https.onRequest((request, response
             body:content.Body,
             class:'chat chat-left',
             align:'left',
-            createdAt: Date()
+            createdAt: new Date().toUTCString(), 
       
           }
 
@@ -373,7 +372,7 @@ exports.incomingMessageFromTwilio = functions.https.onRequest((request, response
                 if(chatToken==='offer'){
                   return admin.database().app.firestore().collection('dubaiEngagments').add({
                   body: content.Body,
-                  createdAt:Date(),
+                  createdAt:new Date().toUTCString(),
                   senderEmail:each.get('email'),
                   senderId:each.id,
                   senderName:each.get('displayName'),
@@ -388,7 +387,7 @@ exports.incomingMessageFromTwilio = functions.https.onRequest((request, response
                 }else if(chatToken==='order'){
                   return admin.database().app.firestore().collection('dubaiEngagments').add({
                   body: content.Body,
-                  createdAt:Date(),
+                  createdAt:new Date().toUTCString(),
                   senderEmail:each.get('email'),
                   senderId:each.id,
                   senderName:each.get('displayName'),
@@ -403,7 +402,7 @@ exports.incomingMessageFromTwilio = functions.https.onRequest((request, response
                 }else if(chatToken==='inquiry'){
                   return admin.database().app.firestore().collection('dubaiQuestions').add({
                   body: content.Body,
-                  createdAt:Date(),
+                  createdAt:new Date().toUTCString(),
                   senderEmail:each.get('email'),
                   senderId:each.id,
                   senderName:each.get('displayName'),
@@ -476,7 +475,7 @@ exports.trackActiveChats = functions
               createdAt: Date()
         
             }
-        
+
             return admin.database().app.firestore().collection('activeChats').doc(res.id).set(message)
             .then( run => console.log(run))
             .catch( err =>  console.log(err))
@@ -515,8 +514,10 @@ exports.updateActiveChats = functions
                 createdAt: Date()
           
               }
-          
-              return admin.database().app.firestore().collection('activeChats').doc(res.id).set(message)
+
+              if(change.after.data().tag==='admin'){
+                return null
+              }return admin.database().app.firestore().collection('activeChats').doc(res.id).set(message)
               .then( run => console.log(run))
               .catch( err =>  console.log(err))
             })
