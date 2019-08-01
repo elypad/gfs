@@ -1,0 +1,14 @@
+[debug] [2019-08-01T23:08:14.606Z] ----------------------------------------------------------------------
+[debug] [2019-08-01T23:08:14.614Z] Command:       /usr/bin/node /usr/bin/firebase deploy --only functions:incomingMessageFromTwilio
+[debug] [2019-08-01T23:08:14.616Z] CLI Version:   7.0.1
+[debug] [2019-08-01T23:08:14.616Z] Platform:      linux
+[debug] [2019-08-01T23:08:14.616Z] Node Version:  v10.5.0
+[debug] [2019-08-01T23:08:14.687Z] Time:          Fri Aug 02 2019 02:08:14 GMT+0300 (East Africa Time)
+[debug] [2019-08-01T23:08:14.688Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-08-01T23:08:14.805Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-08-01T23:08:14.806Z] > authorizing via signed-in user
+[debug] [2019-08-01T23:08:14.806Z] [iam] checking project direct-from-dubai for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2019-08-01T23:08:14.809Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-08-01T23:08:14.810Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>

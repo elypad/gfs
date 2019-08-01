@@ -85,10 +85,10 @@ exports.whatsappNewMessage = functions
 });
 
 exports.whatsappDubaiCustomerOnInquiry = functions
-        .firestore.document(`dubaiQuestions/{questionId}`)
+        .firestore.document(`dubaiEngagments/{questionId}`)
         .onCreate((snap, context) => {
 
-          if(snap.data().tag ==='admin'){
+          if(snap.data().receiverId){
 
             return admin.database().app.firestore().collection('users').doc(snap.data().receiverId).get()
             .then( res =>{
@@ -106,17 +106,6 @@ exports.whatsappDubaiCustomerOnInquiry = functions
 
             })
             .catch( error=> error ) 
-          } else if(snap.data().tag ==='customer') {
-              const textMessage = {
-                      body:`${snap.data().body}`,
-                      to: 'whatsap:+254703283383',
-                      from: `whatsapp:${dfdapprovednumber}`
-                    }
-        
-              return client.messages.create(textMessage)
-                    .then( message => console.log(message))
-                    .catch( error => console.log(error))
-
           }return null
 });
 
@@ -400,7 +389,7 @@ exports.incomingMessageFromTwilio = functions.https.onRequest((request, response
               .then(off => response.send(off))
               .catch( er=>  response.send(er))
                 }else if(chatToken==='inquiry'){
-                  return admin.database().app.firestore().collection('dubaiQuestions').add({
+                  return admin.database().app.firestore().collection('dubaiEngagments').add({
                   body: content.Body,
                   createdAt:new Date().toUTCString(),
                   senderEmail:each.get('email'),
@@ -410,6 +399,7 @@ exports.incomingMessageFromTwilio = functions.https.onRequest((request, response
                   subject:each.get('token').activity,
                   subjectId:each.get('token').activityReff,
                   tag:"customer",
+                  read:false,
                   vehicleId:each.get('token').vehicle
               })
               .then(off => response.send(off))
@@ -529,6 +519,48 @@ exports.updateActiveChats = functions
           .catch( error=> error )  
   
   });
+
+  exports.trackActiveInquiries = functions
+        .firestore.document(`dubaiEngagments/{messageId}`)
+        .onCreate((snap, context) => {
+
+        return admin.database().app.firestore().collection('users').doc(snap.data().receiverId).get()
+        .then( res =>{
+
+          // return admin.database().app.firestore().collection('directMessages')
+          // .where('sender','==',snap.data().sender)
+          // .where('read','==',false).get()
+          // .then( good => {
+
+            
+
+            const message =  {
+
+              vehicleId: snap.data().vehicleId,
+              body: snap.data().body,
+              read:false,
+              receiverId:res.id,
+              subjectId: snap.data().subjectId,
+              // unreadCount:good.size,
+              // senderName: res.data().senderName,
+              // senderId: res.id,
+              tag:res.data().market,
+              createdAt: new Date().toUTCString()
+        
+            }
+
+            return admin.database().app.firestore().collection('activeInquiries').doc(snap.data().vehicleId).set(message)
+            .then( run => console.log(run))
+            .catch( err =>  console.log(err))
+          // })
+          .catch( weri => console.log(weri))
+
+               
+
+        })
+        .catch( error=> error )  
+
+});
 
 
 exports.trackForwardeOffer = functions
